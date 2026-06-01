@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/dal";
 import { LogoutButton } from "@/components/logout-button";
 import { Badge } from "@/components/ui/primitives";
 import { NavLinks } from "@/components/nav-links";
+import { MobileNav } from "@/components/mobile-nav";
 import { MascotBadge } from "@/components/mascot";
 
 export async function SiteHeader() {
@@ -25,6 +26,7 @@ export async function SiteHeader() {
                 {user.callsign}
               </Badge>
               <LogoutButton />
+              <MobileNav />
             </>
           ) : null}
         </div>
