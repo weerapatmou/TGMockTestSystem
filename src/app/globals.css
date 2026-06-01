@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Mock Test Stat — "glass cockpit" theme.
+  Dark instrument-panel surfaces, Thai Airways violet + gold accents,
+  semantic colors for performance, and a distinct palette per topic category.
+*/
+
+@theme {
+  --color-bg: #080b11;
+  --color-bg-elevated: #0e1420;
+  --color-surface: #121a28;
+  --color-surface-2: #182233;
+  --color-border: #243246;
+  --color-border-strong: #33455e;
+
+  --color-foreground: #e8eef6;
+  --color-muted: #9fadc1;
+  --color-faint: #8492a8;
+
+  --color-accent: #a472ff;
+  --color-accent-strong: #8b4dff;
+  --color-accent-soft: #1d1633;
+  --color-gold: #e6b450;
+
+  --color-good: #41c97a;
+  --color-warn: #e6b450;
+  --color-bad: #f2566a;
+
+  --color-cat-approximation: #5ec8e6;
+  --color-cat-memory: #a472ff;
+  --color-cat-numerical: #e6b450;
+  --color-cat-scanning: #41c97a;
+  --color-cat-science: #f2566a;
+  --color-cat-spatial: #ff9d5c;
+
+  --font-sans: var(--font-plex-thai), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  --radius: 0.875rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(900px 500px at 12% -8%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 70%),
+      radial-gradient(800px 500px at 100% 0%, color-mix(in srgb, var(--color-cat-scanning) 7%, transparent), transparent 65%);
+    background-attachment: fixed;
+  }
+
+  /* Tabular, aligned numerals everywhere figures matter. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Motion conveys state here; honor users who opt out. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Solid instrument-panel surface. Blur is reserved for sticky chrome that
+     content scrolls beneath (header, submit bar), never decorative on cards. */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+}
+
+/* Thin custom scrollbar to match the dark surfaces. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
 }

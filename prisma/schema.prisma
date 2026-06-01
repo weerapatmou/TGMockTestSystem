@@ -1,0 +1,101 @@
+// Mock Test Stat — schema
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Category {
+  APPROXIMATION
+  MEMORY
+  NUMERICAL
+  SCANNING
+  SCIENCE
+  SPATIAL
+}
+
+enum SessionStatus {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
+/// A Callsign account — the anonymous identity used to log scores and view stats.
+model User {
+  id           String   @id @default(cuid())
+  callsign     String   @unique // as typed (display)
+  callsignNorm String   @unique // lowercased for case-insensitive login
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  createdSessions MockSession[]
+  scores          Score[]
+}
+
+/// Catalog of test topics (seeded once from the group's topic list).
+model Topic {
+  id       String   @id @default(cuid())
+  name     String
+  category Category
+  parts    Part[]
+
+  @@unique([name, category])
+}
+
+/// A weekly mock test event, e.g. "5th Mock Test — 31 May 2026".
+model MockSession {
+  id          String        @id @default(cuid())
+  title       String
+  eventDate   DateTime
+  note        String?
+  status      SessionStatus @default(OPEN)
+  bonusWeight Float         @default(0.15) // weight of accuracy in the combined index (0..1)
+  createdById String
+  createdBy   User          @relation(fields: [createdById], references: [id])
+  sets        TestSet[]
+  createdAt   DateTime      @default(now())
+}
+
+/// A "ชุด" within a session, e.g. "Mock test 1 (2024)".
+model TestSet {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   MockSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name      String
+  order     Int
+  parts     Part[]
+}
+
+/// A scored part within a set, e.g. "1.1 series number — 20Q".
+model Part {
+  id             String  @id @default(cuid())
+  setId          String
+  set            TestSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+  topicId        String
+  topic          Topic   @relation(fields: [topicId], references: [id])
+  label          String? // optional override of the topic name
+  totalQuestions Int
+  order          Int
+  scores         Score[]
+}
+
+/// One user's score for one part (re-submitting updates the same row).
+model Score {
+  id                 String   @id @default(cuid())
+  partId             String
+  part               Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  scoreGot           Int
+  questionsAttempted Int
+  totalQuestions     Int // snapshot of part.totalQuestions at entry time
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([partId, userId])
+}
