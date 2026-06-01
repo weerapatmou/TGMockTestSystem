@@ -48,3 +48,6 @@ next-env.d.ts
 /prisma/mint-token.ts
 /preview-mascot.mjs
 /mascot-preview.png
+
+# generated DB bootstrap (paste into Neon SQL Editor; not part of the app)
+/neon-setup.sql
