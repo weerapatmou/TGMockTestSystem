@@ -141,10 +141,11 @@ export function ScoreEntryGrid({
             <h3 className="font-semibold">{set.name}</h3>
             <div className="hidden grid-cols-[1fr_84px_84px_64px] gap-3 px-1 text-xs text-faint sm:grid">
               <span>หัวข้อ</span>
-              <span className="text-center">คะแนน</span>
-              <span className="text-center">ทำกี่ข้อ</span>
+              <span className="text-center">คะแนน<span className="text-bad ml-0.5">*</span></span>
+              <span className="text-center">ทำกี่ข้อ<span className="text-bad ml-0.5">*</span></span>
               <span className="text-center">ทั้งหมด</span>
             </div>
+            <p className="hidden text-right text-xs text-faint sm:block"><span className="text-bad">*</span> ต้องกรอก</p>
             <div className="space-y-2">
               {set.parts.map((p) => {
                 const err = partError(p);
@@ -175,7 +176,7 @@ export function ScoreEntryGrid({
                         inputMode="numeric"
                         min="0"
                         max={p.totalQuestions}
-                        placeholder={String(p.totalQuestions)}
+                        placeholder="–"
                         aria-label={`ข้อที่ทำ ${p.name}`}
                         className={cn("tnum text-center", err && "border-bad")}
                         value={entries[p.id]?.attempted ?? ""}

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createSession } from "@/actions/sessions";
 import { CATEGORIES, CATEGORY_LABEL, type Category } from "@/lib/topics";
 import { Button } from "@/components/ui/button";
@@ -311,6 +312,12 @@ export function SessionBuilder({
           {sets.length} ชุด · {totalParts} parts ·{" "}
           <span className="tnum">{totalQuestions}</span> ข้อรวม
         </span>
+        <Link
+          href="/settings/topics"
+          className="ml-auto text-sm text-muted hover:text-foreground"
+        >
+          จัดการหัวข้อ →
+        </Link>
       </div>
 
       {error && (
