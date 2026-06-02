@@ -3,6 +3,7 @@
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -41,7 +42,23 @@ export function PartBar({ data }: { data: PartBarDatum[] }) {
           }}
           formatter={(value) => `${Number(value).toFixed(1)}%`}
         />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend
+          wrapperStyle={{ fontSize: 12 }}
+          content={() => (
+            <div style={{ display: "flex", gap: 16, justifyContent: "center", fontSize: 12, color: "var(--color-muted)" }}>
+              {[
+                { color: "var(--color-faint)", label: "กลุ่ม (เฉลี่ย)" },
+                { color: "var(--color-good)", label: "ฉัน ≥ กลุ่ม" },
+                { color: "var(--color-bad)", label: "ฉัน < กลุ่ม" },
+              ].map(({ color, label }) => (
+                <span key={label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: 2, background: color }} />
+                  {label}
+                </span>
+              ))}
+            </div>
+          )}
+        />
         <Bar
           name="กลุ่ม (เฉลี่ย)"
           dataKey="group"
@@ -52,10 +69,22 @@ export function PartBar({ data }: { data: PartBarDatum[] }) {
         <Bar
           name="ฉัน"
           dataKey="me"
-          fill="var(--color-accent)"
           radius={[0, 4, 4, 0]}
           barSize={12}
-        />
+        >
+          {data.map((d, i) => (
+            <Cell
+              key={i}
+              fill={
+                d.me === null
+                  ? "var(--color-faint)"
+                  : d.me >= d.group
+                  ? "var(--color-good)"
+                  : "var(--color-bad)"
+              }
+            />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );
