@@ -7,6 +7,7 @@ import {
   statsByPart,
   breakdownByCategory,
   scorePct,
+  accuracyPct,
 } from "@/lib/stats";
 import { CATEGORIES, CATEGORY_LABEL, type Category } from "@/lib/topics";
 import { Button } from "@/components/ui/button";
@@ -221,6 +222,8 @@ export default async function ResultsPage({
                   <th className="py-2 pr-2 text-right font-medium">ต่ำสุด</th>
                   <th className="py-2 pr-2 text-right font-medium">สูงสุด</th>
                   <th className="py-2 pr-2 text-right font-medium">ของฉัน</th>
+                  <th className="py-2 pr-2 text-right font-medium">%score</th>
+                  <th className="py-2 pr-2 text-right font-medium">%acc</th>
                   <th className="py-2 text-right font-medium">เต็ม</th>
                 </tr>
               </thead>
@@ -242,6 +245,12 @@ export default async function ResultsPage({
                       </td>
                       <td className="py-2 pr-2 text-right tnum font-medium text-accent">
                         {mine ? fmt(mine.scoreGot, 0) : "–"}
+                      </td>
+                      <td className="py-2 pr-2 text-right tnum text-muted">
+                        {mine ? pct(scorePct(mine.scoreGot, mine.totalQuestions)) : "–"}
+                      </td>
+                      <td className="py-2 pr-2 text-right tnum text-muted">
+                        {mine ? pct(accuracyPct(mine.scoreGot, mine.questionsAttempted)) : "–"}
                       </td>
                       <td className="py-2 text-right tnum text-faint">
                         {p.totalQuestions}
